@@ -1,4 +1,6 @@
-# following sentdex's pythonprogramming tutorial
+
+# following sentdex's pythonprogramming tutorial (1-7):
+
 import nltk
 
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -59,15 +61,28 @@ def process_content():
             words = nltk.word_tokenize(i)
             tagged = nltk.pos_tag(words)
             # print(tagged)
+
+            # Chunking:
+            # '+' is one or more, '*' is zero or more, '?' is 0 or 1:
             chunkGram = r"""Chunk: {<RB.?>*<VB.?>*<NNP>+<NN>?}"""
+
+            # Chinking:
+            # chunkGram = r"""Chunk: {<.*>+}
+            #                         }<VB.?|IN|DT|TO>+{"""
             chunkParser = nltk.RegexpParser(chunkGram)
             chunked = chunkParser.parse(tagged)
+
+            print(chunked)
+            for subtree in chunked.subtrees(filter=lambda t: t.label() == 'Chunk'):
+                print(subtree)
+
             chunked.draw()
+
+            # Cut all the above (until 'tagged') and use this to group e.g. 'White' and 'House' as 'White House':
+            # namedEnt = nltk.ne_chunk(tagged, binary=True)
+            # namedEnt.draw()
 
     except Exception as e:
         print(str(e))
 
 process_content()
-
-
-# Chunking (see above process_content function):
